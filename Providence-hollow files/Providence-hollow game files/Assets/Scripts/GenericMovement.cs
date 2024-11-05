@@ -12,6 +12,8 @@ public class GenericMovement : MonoBehaviour
     public bool CanRun;
     public float RunSpeed;
 
+    public KeyCode RunKey = KeyCode.LeftShift;
+
     private bool IsRunning;
 
     [Header("Stamina system")]
@@ -61,10 +63,8 @@ public class GenericMovement : MonoBehaviour
 
     [Header("Collision")]
     public float CollisionDistance;
-    public float CollisionDistanceCrouching;
     public LayerMask GroundMask;
     public Transform GroundCheckTransform;
-    public Transform GroundCheckTransformCrouching;
 
     private bool IsGrounded;
 
@@ -77,7 +77,8 @@ public class GenericMovement : MonoBehaviour
     void Update(){
 
         //Ground check
-        IsGrounded = IsCrouching ? Physics.CheckSphere(GroundCheckTransformCrouching.position, CollisionDistanceCrouching, GroundMask) : Physics.CheckSphere(GroundCheckTransform.position, CollisionDistance, GroundMask);
+        GroundCheckTransform.localScale = new Vector3(1 / transform.localScale.x, 1 / transform.localScale.y, 1 / transform.localScale.z); // Sets the scale of the groundcheck object to 1 
+        IsGrounded = Physics.CheckSphere(GroundCheckTransform.position, CollisionDistance, GroundMask);   // checks if the player is grounded
 
 
         //Gravity
@@ -88,25 +89,8 @@ public class GenericMovement : MonoBehaviour
         GravityVelocity.y -= Gravity * Time.deltaTime;
         CC.Move(GravityVelocity * Time.deltaTime);
 
-        //Check if crouching
-        if(!IsRunning && IsGrounded && Input.GetKeyDown(CrouchKey)){
-            IsCrouching = !IsCrouching;
-            // if(IsCrouching){
-            //     Physics.Raycast(transform.position, -transform.up, out RaycastHit hit, 2, GroundMask);
-            //     transform.position = hit.point + new Vector3(0, 1, 0);
-            // }else{
-            //     for(var i = 0; i <= 60; i++){
-            //         if(IsCrouching){
-            //             break;
-            //         }
-            //         transform.position -= new Vector3(0, 0.025f, 0);
-            //     }
-            //     transform.position += new Vector3(0, 0.025f, 0);
-            // }
-        }
-
         //Check if running
-        IsRunning = Input.GetKey(KeyCode.LeftShift) && Stamina > 0 && CanRun;
+        IsRunning = Input.GetKey(RunKey) && Stamina > 0 && CanRun;
         Stamina += IsRunning ? StaminaWaste * Time.deltaTime : StaminaGain * Time.deltaTime;
         Stamina = Mathf.Clamp(Stamina, 0, MaxStamina);
 
