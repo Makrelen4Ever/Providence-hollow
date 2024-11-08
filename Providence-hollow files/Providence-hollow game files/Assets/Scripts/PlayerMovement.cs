@@ -6,11 +6,14 @@ public class PlayerMovement : MonoBehaviour
 {
 
 #region Input
+[Header("Inputs")]
+[SerializeField] private InputManager inputManager;
 
 private Vector2 InputAxis;
 
+//Getting the movement axis as a vector2 from the inpumanager
 void UpdateInput(){
-    InputAxis = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+    InputAxis = inputManager.MoveDir;
 }
 
 #endregion
@@ -42,10 +45,9 @@ void UpdateInput(){
         }
     }
 
-    void Jump(){
-        if(Input.GetKeyDown("space") && IsGrounded){
-            GravityVelocity.y = JumpForce;
-        }
+    //A adds force upwards to jump
+    public void Jump(){
+        GravityVelocity.y = JumpForce;
     }
 
 #endregion
@@ -76,6 +78,7 @@ void UpdateInput(){
             GravityVelocity.y = 0;
         }
 
+        //Moves the player  cuz of gravity
         GravityVelocity.y -= Gravity * Time.fixedDeltaTime;
         CC.Move(GravityVelocity * Time.fixedDeltaTime);
     }
@@ -83,16 +86,14 @@ void UpdateInput(){
 #endregion
 
     void Start(){
+        //Gets the Character controller from the player
         CC = GetComponent<CharacterController>();
-    }
-
-    void Update(){
-        UpdateInput();
-        Jump();
     }
 
     void FixedUpdate()
     {
+        //Calls the different functions that moves the player
+        UpdateInput();
         Grav();
         Move();
     }

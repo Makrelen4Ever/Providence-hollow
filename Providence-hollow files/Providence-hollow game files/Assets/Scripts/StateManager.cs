@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StateManager : MonoBehaviour
 {
@@ -8,7 +9,7 @@ public class StateManager : MonoBehaviour
     [SerializeField] private PlayerMovement Movement;
     [SerializeField] private string State;
 
-    private Vector2 inputAxis;
+    private Vector2 InputAxis;
 
     [Header("Collision")]
     [SerializeField] private float CollisionDistance;
@@ -19,6 +20,8 @@ public class StateManager : MonoBehaviour
     [Header("Stamina system")]
     [SerializeField] private float Stamina;
     [SerializeField] private float MaxStamina;
+    [Range(0, 1)]
+    [SerializeField] private float TiredPercent;
 
     [Space]
 
@@ -29,14 +32,23 @@ public class StateManager : MonoBehaviour
     [SerializeField] private bool CanRun;
     [SerializeField] private bool IsTired;
     [SerializeField] private bool IsRunning;
-
-    [Space]
-
     [SerializeField] private bool IsCrouching;
 
-    [Header("KeyCodes")]
-    [SerializeField] private KeyCode RunKey;
+    [Space]
+    
+    [SerializeField] private bool RunKeyPressed;
+    [SerializeField] private bool CrouchKeyPressed;
+
+    [Header("Input")]
+    [SerializeField] private InputManager inputManager;
     [SerializeField] private KeyCode CrouchKey;
+
+    [Header("Stamina bar")]
+    [SerializeField] private GameObject StaminaBar;
+    [SerializeField] private Color CanRunColor;
+    [SerializeField] private Color CannotRunColor;
+    
+    private bool ColorEnabled = true;
 
     void Update()
     {
@@ -44,12 +56,16 @@ public class StateManager : MonoBehaviour
         bool IsGrounded = Physics.CheckSphere(GroundCheckTransform.position, CollisionDistance, GroundMask);
 
         //Gets the input axis
-        inputAxis = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        InputAxis = inputManager.MoveDir;
+
+        if(InputAxis.magnitude <= 0){
+            RunKeyPressed = false;
+        }
 
         //Checks if the player gets tired so they cant run for a while
         if(Stamina <= 0){
             IsTired = true;
-        }else if(Stamina >= MaxStamina * 0.1f){
+        }else if(Stamina >= MaxStamina * TiredPercent){
             IsTired = false;
         }
 
@@ -60,12 +76,12 @@ public class StateManager : MonoBehaviour
         //Sets the states
         if(IsGrounded){
             //Checks if the player is grounded
-            if(Mathf.Abs(inputAxis.magnitude) > 0){
+            if(Mathf.Abs(InputAxis.magnitude) > 0){
                 //Checks for key input to see if the player is moving
-                if(Input.GetKey(RunKey) && CanRun){
+                if(RunKeyPressed && CanRun){
                     //Checks if the player is running
                     State = "Running";
-                }else if(Input.GetKey(CrouchKey)){
+                }else if(CrouchKeyPressed){
                     //Checks if the player is crouching
                     State = "Crouching";
                 }else{
@@ -116,8 +132,26 @@ public class StateManager : MonoBehaviour
 
     void StaminaSystem(){
         //Checks if the runkey is pressed and increase/decrease the stamina
-        IsRunning = Input.GetKey(RunKey) && Stamina > 0 && CanRun;
+        IsRunning = RunKeyPressed && Stamina > 0 && CanRun;
         Stamina += IsRunning ? StaminaWaste * Time.deltaTime : StaminaGain * Time.deltaTime;
         Stamina = Mathf.Clamp(Stamina, 0, MaxStamina);
+
+        // sets the scale and color of the stamina bar in the corner
+        StaminaBar.transform.localScale = new Vector3(Stamina/MaxStamina, 1, 1);
+        if(ColorEnabled){StaminaBar.GetComponent<Image>().color = CanRun ? CanRunColor : CannotRunColor;}
+    }
+    
+    //Starts to run
+    public void StartRun(){
+        //Disables crouching when starting to run
+        if(!IsTired){
+            CrouchKeyPressed = false;
+        }
+        RunKeyPressed = !RunKeyPressed;
+    }
+
+    //Starting to crouch
+    public void StartCrouching(){
+        CrouchKeyPressed = !CrouchKeyPressed;
     }
 }
