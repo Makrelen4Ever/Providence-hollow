@@ -41,9 +41,11 @@ public class InputManager : MonoBehaviour
         Controls.Player.Interact.Enable();
 
         Controls.Player.Run.performed += EnableRunFunction;
+        Controls.Player.Run.canceled += DisableRunFunction;
         Controls.Player.Run.Enable();
 
         Controls.Player.Crouch.performed += EnableCrouchFunction;
+        Controls.Player.Crouch.canceled += DisableCrouchFunction;
         Controls.Player.Crouch.Enable();
     }
 
@@ -85,10 +87,22 @@ public class InputManager : MonoBehaviour
         PlayerStateManager.StartRun();
     }
 
+    //a function that makes the player stop running
+    public void DisableRunFunction(InputAction.CallbackContext context)
+    {
+        PlayerStateManager.StopRun();
+    }
+
     //A crouch function that gets called when you press the crouch button
     public void EnableCrouchFunction(InputAction.CallbackContext context)
     {
         PlayerStateManager.StartCrouching();
+    }
+
+    //Stops crouching again
+    public void DisableCrouchFunction(InputAction.CallbackContext context)
+    {
+        PlayerStateManager.StopCrouching();
     }
 
     //Updates the public the public input vectors

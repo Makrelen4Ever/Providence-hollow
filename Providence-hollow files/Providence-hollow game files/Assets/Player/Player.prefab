@@ -32,11 +32,12 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.91, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8941257094608521003}
   - {fileID: 784792596144309917}
+  - {fileID: 1527532810991639301}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &8597428672858118682
@@ -108,7 +109,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.4
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
@@ -132,7 +133,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 3
   m_Height: 2
-  m_Radius: 0.5
+  m_Radius: 0.4
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
@@ -157,7 +158,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   GroundCheckTransform: {fileID: 8941257094608521003}
-  Stamina: 0
+  Stamina: 5
   MaxStamina: 5
   TiredPercent: 0.25
   StaminaGain: 0.5
@@ -166,8 +167,9 @@ MonoBehaviour:
   IsTired: 0
   IsRunning: 0
   IsCrouching: 0
-  inputManager: {fileID: 0}
-  CrouchKey: 306
+  RunKeyPressed: 0
+  CrouchKeyPressed: 0
+  inputManager: {fileID: 6485023183544048552}
   StaminaBar: {fileID: 0}
   CanRunColor: {r: 1, g: 1, b: 1, a: 1}
   CannotRunColor: {r: 1, g: 0.5, b: 0.5, a: 1}
@@ -183,7 +185,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b49a651218042664da073e2706a1a1f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputManager: {fileID: 0}
+  inputManager: {fileID: 6485023183544048552}
   WalkSpeed: 2
   RunSpeed: 4
   CrouchSpeed: 1
@@ -239,8 +241,8 @@ Camera:
   m_GameObject: {fileID: 2654614473984152293}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 2
-  m_BackGroundColor: {r: 1, g: 1, b: 1, a: 0}
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -379,9 +381,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 256af75380d798a499da6684dca1eea4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputManager: {fileID: 0}
-  Xsens: 1
-  Ysens: 1
+  inputManager: {fileID: 6485023183544048552}
+  Xsens: 0.2
+  Ysens: 0.2
 --- !u!114 &5883405879294951902
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -431,3 +433,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4224240231449287330}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8266319441011539865
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1527532810991639301}
+  - component: {fileID: 6485023183544048552}
+  m_Layer: 0
+  m_Name: InputManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1527532810991639301
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8266319441011539865}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4224240231449287330}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6485023183544048552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8266319441011539865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e67b0f5fb7919d64ea5d61fa5075f6cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MoveDir: {x: 0, y: 0}
+  LookDir: {x: 0, y: 0}
+  movement: {fileID: 2164497808805264617}
+  PlayerInteraction: {fileID: 5883405879294951902}
+  PlayerStateManager: {fileID: 4168952519212716697}

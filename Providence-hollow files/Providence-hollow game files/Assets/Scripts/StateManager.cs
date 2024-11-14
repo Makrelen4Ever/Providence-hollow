@@ -41,7 +41,6 @@ public class StateManager : MonoBehaviour
 
     [Header("Input")]
     [SerializeField] private InputManager inputManager;
-    [SerializeField] private KeyCode CrouchKey;
 
     [Header("Stamina bar")]
     [SerializeField] private GameObject StaminaBar;
@@ -57,10 +56,6 @@ public class StateManager : MonoBehaviour
 
         //Gets the input axis
         InputAxis = inputManager.MoveDir;
-
-        if(InputAxis.magnitude <= 0){
-            RunKeyPressed = false;
-        }
 
         //Checks if the player gets tired so they cant run for a while
         if(Stamina <= 0){
@@ -128,6 +123,7 @@ public class StateManager : MonoBehaviour
         //Transfers the local bools to the player bools
         Movement.IsRunning = IsRunning;
         Movement.IsCrouching = IsCrouching;
+        Movement.IsGrounded = IsGrounded;
     }
 
     void StaminaSystem(){
@@ -144,14 +140,24 @@ public class StateManager : MonoBehaviour
     //Starts to run
     public void StartRun(){
         //Disables crouching when starting to run
-        if(!IsTired){
-            CrouchKeyPressed = false;
-        }
-        RunKeyPressed = !RunKeyPressed;
+        CrouchKeyPressed = false;
+        RunKeyPressed = true;
+    }
+
+    public void StopRun(){
+        //Disables crouching when starting to run
+        RunKeyPressed = false;
     }
 
     //Starting to crouch
     public void StartCrouching(){
-        CrouchKeyPressed = !CrouchKeyPressed;
+        //Disables Running when starting to crouch
+        IsRunning = false;
+        CrouchKeyPressed = true;
+    }
+
+    public void StopCrouching(){
+        //Disables Running when starting to crouch
+        CrouchKeyPressed = false;
     }
 }

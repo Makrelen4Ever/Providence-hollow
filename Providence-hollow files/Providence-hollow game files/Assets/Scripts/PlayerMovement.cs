@@ -56,23 +56,12 @@ void UpdateInput(){
     [Header("Gravity")]
     [SerializeField] private float Gravity;
 
+    [HideInInspector] public bool IsGrounded;
+    
     private Vector3 GravityVelocity;
-
-    [Header("Collision")]
-    [SerializeField] private float CollisionDistance;
-    [SerializeField] private LayerMask GroundMask;
-    [SerializeField] private Transform GroundCheckTransform;
-
-    private bool IsGrounded;
-
     private CharacterController CC;
 
     void Grav(){
-        //Ground check
-        GroundCheckTransform.localScale = new Vector3(1 / transform.localScale.x, 1 / transform.localScale.y, 1 / transform.localScale.z); // Sets the scale of the groundcheck object to 1 
-        IsGrounded = Physics.CheckSphere(GroundCheckTransform.position, CollisionDistance, GroundMask);   // checks if the player is grounded
-
-
         //Gravity
         if(IsGrounded && GravityVelocity.y < 0){
             GravityVelocity.y = 0;
